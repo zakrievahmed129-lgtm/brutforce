@@ -262,7 +262,6 @@
 
         function log(msg, type = 'info') {
             const term = document.getElementById('terminal');
-            if(!term) return;
             const div = document.createElement('div');
             div.className = { info: 'text-slate-400', success: 'text-green-400 font-bold', error: 'text-red-400', warn: 'text-blue-400' }[type];
             div.innerHTML = `<span class="opacity-20 mr-2">></span>${msg}`;
@@ -292,6 +291,7 @@
             document.getElementById('securityVerdict').innerText = score < 40 ? "FAIBLE" : (score < 80 ? "MOYEN" : "EXCELLENT");
             document.getElementById('timeToCrack').innerText = val.length < 5 ? "< 1s" : (val.length > 10 ? "> 1 an" : "Quelques min");
             
+            // Rapport
             const cont = document.getElementById('adviceContainer');
             const perf = document.getElementById('perfectStatus');
             document.getElementById('waitingMessage').classList.add('hidden');
@@ -366,32 +366,17 @@
         document.getElementById('stopBtn').addEventListener('click', stop);
         updateUI("soleil");
 
-        // GESTION INSTALLATION (Correction Erreur Blob)
+        // INSTALLATION
         let def;
-        window.addEventListener('beforeinstallprompt', e => { 
-            e.preventDefault(); 
-            def = e; 
-            log("SYSTÈME D'INSTALLATION PRÊT", "warn");
-        });
-
+        window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); def = e; });
         document.getElementById('installAppBtn').addEventListener('click', async () => {
-            if(def){ 
-                def.prompt(); 
-                def = null; 
-            } else { 
-                document.getElementById('installToast').classList.add('show'); 
-                setTimeout(()=>document.getElementById('installToast').classList.remove('show'), 6000); 
-            }
+            if(def){ def.prompt(); def = null; } 
+            else { document.getElementById('installToast').classList.add('show'); setTimeout(()=>document.getElementById('installToast').classList.remove('show'), 5000); }
         });
-
-        // Désactivation de l'enregistrement Blob du Service Worker qui cause l'erreur
-        // Sur GitHub Pages, le SW doit être un fichier physique nommé sw.js à la racine.
-        // On laisse ici la structure pour éviter les crashs si le fichier est absent.
-        if('serviceWorker' in navigator && window.location.protocol === 'https:') {
-            // Note : L'enregistrement ne se fera que si un vrai fichier sw.js existe sur ton GitHub.
-            navigator.serviceWorker.register('./sw.js').catch(err => {
-                console.log("Service Worker non enregistré (attendu sans fichier physique):", err.message);
-            });
+        if('serviceWorker' in navigator) {
+            const sw = 'self.addEventListener("install",e=>self.skipWaiting());self.addEventListener("fetch",e=>e.respondWith(fetch(e.request)));';
+            const b = new Blob([sw], {type:'application/javascript'});
+            navigator.serviceWorker.register(URL.createObjectURL(b));
         }
     </script>
 </body>
