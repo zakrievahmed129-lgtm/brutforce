@@ -3,7 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#020617">
     <title>BruteForce Ultra-Performance - Full Power Mode</title>
+    
+    <!-- Manifeste PWA intégré via Data URI pour GitHub Pages -->
+    <link rel="manifest" id="pwa-manifest">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap');
@@ -47,7 +52,6 @@
         #installAppBtn { transition: all 0.3s ease; }
         #installAppBtn:hover { transform: translateY(-1px); }
 
-        /* Correction pour le plein écran sur mobile si besoin */
         @media (max-width: 1024px) {
             html, body { overflow-y: auto; height: auto; min-height: 100%; }
         }
@@ -69,15 +73,12 @@
     </style>
 </head>
 <body class="p-2 md:p-4">
-    <!-- Toast de notification pour l'installation GitHub/Web -->
     <div id="installToast" class="flex flex-col items-center gap-2">
         <p class="text-[10px] font-bold text-center">Pour installer sur iPhone :<br>Appuyez sur <span class="text-blue-400">Partager</span> puis <span class="text-blue-400">Sur l'écran d'accueil</span></p>
         <button onclick="document.getElementById('installToast').classList.remove('show')" class="text-[9px] text-slate-500 underline">Fermer</button>
     </div>
 
     <div class="max-w-full mx-auto w-full flex flex-col h-full space-y-3">
-        
-        <!-- Header -->
         <header class="flex flex-col md:flex-row items-center gap-4 md:gap-6 border-b border-slate-800 pb-3">
             <div class="flex-shrink-0 text-center md:text-left">
                 <h1 class="text-xl md:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">
@@ -103,7 +104,6 @@
             </div>
 
             <div class="flex-shrink-0 flex gap-2 w-full md:w-auto items-center">
-                <!-- Bouton amélioré pour l'installation web -->
                 <button id="installAppBtn" class="bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-bold py-2 px-3 rounded-lg flex items-center gap-2 shadow-lg shadow-blue-900/40 border border-blue-400/20">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                     INSTALLER APP
@@ -116,28 +116,22 @@
         </header>
 
         <div class="flex flex-col lg:grid lg:grid-cols-12 gap-3 flex-1 overflow-hidden">
-            
-            <!-- SECTION CONSEILS -->
             <div class="order-3 lg:order-1 lg:col-span-3 flex flex-col overflow-hidden h-[200px] lg:h-full">
                 <section class="stats-card rounded-xl flex flex-col h-full overflow-hidden">
                     <div class="p-3 border-b border-slate-700 bg-slate-900/50">
                         <h2 class="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Rapport d'Analyse</h2>
                     </div>
-                    
                     <div id="waitingMessage" class="flex-1 flex flex-col items-center justify-center p-6 text-center space-y-3">
                         <div class="w-8 h-8 border-2 border-slate-700 border-t-blue-500 rounded-full animate-spin"></div>
                         <p class="text-[10px] text-slate-500 uppercase font-bold">En attente...</p>
                     </div>
-
                     <div id="adviceContainer" class="hidden overflow-y-auto flex-1 p-4 space-y-2"></div>
-
                     <div id="perfectStatus" class="hidden p-4 bg-green-900/20 border-t border-green-500/30 text-center">
                         <span class="text-xs font-bold text-green-400 italic text-[10px]">Mot de passe validé Ahmed ! ✨</span>
                     </div>
                 </section>
             </div>
 
-            <!-- CONFIGURATION & STATS -->
             <div class="order-1 lg:order-2 lg:col-span-3 flex flex-col space-y-3">
                 <section class="stats-card p-4 rounded-xl">
                     <h2 class="text-[10px] font-bold mb-3 uppercase text-blue-400 tracking-widest">Configuration</h2>
@@ -191,7 +185,6 @@
                 </section>
             </div>
 
-            <!-- LOGS & CPU CLUSTER -->
             <div class="order-2 lg:order-3 lg:col-span-6 flex flex-col space-y-3 overflow-hidden h-[400px] lg:h-full">
                 <div class="bg-slate-900/50 border border-slate-800 p-3 rounded-xl shadow-inner">
                     <div class="flex justify-between items-center mb-2">
@@ -214,28 +207,60 @@
     </div>
 
     <script>
-        // Logique PWA & Installation
+        // CONFIGURATION PWA DYNAMIQUE
+        const manifest = {
+            "name": "Force Brute Ahmed Nitro",
+            "short_name": "BruteForce",
+            "start_url": ".",
+            "display": "standalone",
+            "background_color": "#020617",
+            "theme_color": "#020617",
+            "description": "Analyseur de mot de passe haute performance",
+            "icons": [{
+                "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzNiODJmNiIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0xMiAyMmM1LjUyMyAwIDEwLTQuNDc3IDEwLTEwUzE3LjUyMyAyIDEyIDIgMiA2LjQ3NyAyIDEyczQuNDc3IDEwIDEwIDEwek0xMiAxNmw0LTQtNC00TTggMTJoOCIvPjwvc3ZnPg==",
+                "sizes": "512x512",
+                "type": "image/svg+xml",
+                "purpose": "any"
+            }]
+        };
+        const manifestStr = JSON.stringify(manifest);
+        const manifestBlob = new Blob([manifestStr], {type: 'application/json'});
+        document.getElementById('pwa-manifest').setAttribute('href', URL.createObjectURL(manifestBlob));
+
+        // SERVICE WORKER IN-LINE
+        const swCode = `
+            self.addEventListener('install', (e) => self.skipWaiting());
+            self.addEventListener('fetch', (e) => e.respondWith(fetch(e.request)));
+        `;
+        const swBlob = new Blob([swCode], {type: 'application/javascript'});
+        const swUrl = URL.createObjectURL(swBlob);
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register(swUrl).catch(() => {});
+        }
+
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            console.log("PWA: Prêt pour l'installation native");
+            document.getElementById('installAppBtn').classList.add('animate-bounce');
         });
 
         document.getElementById('installAppBtn').addEventListener('click', async () => {
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    document.getElementById('installAppBtn').classList.remove('animate-bounce');
+                }
                 deferredPrompt = null;
             } else {
-                // Si pas de support natif direct, on montre un petit toast explicatif (surtout iOS)
                 const toast = document.getElementById('installToast');
                 toast.classList.add('show');
                 setTimeout(() => toast.classList.remove('show'), 6000);
             }
         });
 
-        // Worker Brute Force Logic
+        // WORKER BRUTE FORCE
         const workerCode = `
             self.onmessage = function(e) {
                 const { target, charset, startFrom, step, minLen, maxLen } = e.data;
@@ -243,19 +268,15 @@
                 const targetLen = target.length;
                 const targetCodes = new Uint8Array(target.split('').map(c => c.charCodeAt(0)));
                 const charsetCodes = new Uint8Array(charset.split('').map(c => c.charCodeAt(0)));
-                
                 let indices = new Uint32Array(16); 
                 let currentLen = minLen;
-
                 let startNum = BigInt(startFrom);
                 let tempNum = startNum;
                 for(let i = 0; i < currentLen; i++) {
                     indices[i] = Number(tempNum % BigInt(charsetLen));
                     tempNum = tempNum / BigInt(charsetLen);
                 }
-
                 const batchSize = 1000000; 
-                
                 function run() {
                     for (let b = 0; b < batchSize; b++) {
                         if (currentLen === targetLen) {
@@ -274,7 +295,6 @@
                             }
                         }
                         if (currentLen > maxLen) { self.postMessage({ type: 'DONE' }); return; }
-
                         for(let s = 0; s < step; s++) {
                             let carry = 1;
                             for (let i = 0; i < currentLen; i++) {
@@ -293,7 +313,6 @@
 
         const coreCount = navigator.hardwareConcurrency || 4;
         let workers = [], isRunning = false, totalAttempts = 0n, startTime = 0, timerInterval, speedInterval;
-
         document.getElementById('coreCountDisplay').innerText = coreCount;
 
         function log(msg, type = 'info') {
@@ -317,19 +336,16 @@
             const bar = document.getElementById('securityBar');
             const verdict = document.getElementById('securityVerdict');
             document.getElementById('entropyDisplay').innerText = `${entropy} bits`;
-            
             let score = 0;
             if (password.length >= 8) score += 20;
             if (password.length >= 12) score += 20;
             if (/[A-Z]/.test(password)) score += 20;
             if (/[0-9]/.test(password)) score += 20;
             if (/[^A-Za-z0-9]/.test(password)) score += 20;
-            
             bar.style.width = score + "%";
             bar.style.backgroundColor = score < 40 ? "#ef4444" : (score < 80 ? "#fbbf24" : "#10b981");
             verdict.innerText = score < 40 ? "FAIBLE" : (score < 80 ? "MOYEN" : "EXCELLENT");
             verdict.className = score < 40 ? "text-red-500 font-black" : (score < 80 ? "text-yellow-500 font-black" : "text-green-400 font-black");
-
             const charsetSize = 62; 
             const timeS = Math.pow(charsetSize, password.length) / 800_000_000;
             document.getElementById('timeToCrack').innerText = timeS < 60 ? "< 1 min" : (timeS > 31536000 ? "> 1 an" : Math.round(timeS/3600) + "h");
@@ -378,32 +394,25 @@
             if(document.getElementById('useNumbers').checked) charsetParts.push('0123456789');
             if(document.getElementById('useSymbols').checked) charsetParts.push('!@#$%^&*()-_=+[]{}|;:,.<>?');
             const charset = charsetParts.join('');
-            
             if(!target || !charset) return;
-
             isRunning = true; totalAttempts = 0n; startTime = Date.now();
             document.getElementById('terminal').innerHTML = "";
             document.getElementById('startBtn').classList.add('hidden');
             document.getElementById('stopBtn').classList.remove('hidden');
             document.getElementById('currentMode').innerText = "RUNNING";
-
             log(`MOTEUR : Tous les cœurs activés à 100%`, "warn");
-
             timerInterval = setInterval(() => {
                 const diff = new Date(Date.now() - startTime);
                 document.getElementById('elapsedTime').innerText = diff.toISOString().substr(11, 8);
             }, 1000);
-
             speedInterval = setInterval(() => {
                 const elapsed = (Date.now() - startTime) / 1000;
                 if(elapsed > 0) document.getElementById('statSpeed').innerText = Math.floor(Number(totalAttempts) / elapsed).toLocaleString() + " h/s";
             }, 500);
-
             const blob = new Blob([workerCode], { type: 'application/javascript' });
             const workerUrl = URL.createObjectURL(blob);
             const minL = useAuto ? target.length : 1;
             const maxL = useAuto ? target.length : 15;
-
             for (let i = 0; i < coreCount; i++) {
                 const worker = new Worker(workerUrl);
                 document.getElementById(`worker-pill-${i}`).classList.add('worker-active');
