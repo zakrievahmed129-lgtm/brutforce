@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BruteForce Ultra-Performance - Nitro Mode</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap');
+        body { 
+            background-color: #020617; 
+            color: #f8fafc; 
+            font-family: 'Inter', sans-serif; 
+            height: 100vh;
+            overflow: hidden;
+        }
+        .code-font { font-family: 'Fira+Code', monospace; }
+        .stats-card { background: linear-gradient(145deg, #1e293b, #0f172a); border: 1px solid #334155; }
+        
+        .security-bar-container { height: 8px; background: #1e293b; border-radius: 4px; overflow: hidden; width: 100%; }
+        #securityBar { width: 0%; height: 100%; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        .advice-item { border-left: 2px solid #334155; padding-left: 10px; margin-bottom: 12px; font-size: 11px; }
+        .advice-check { color: #10b981; border-left-color: #10b981; }
+        .advice-warn { color: #f87171; border-left-color: #ef4444; }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+
+        @keyframes pulse-blue {
+            0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+        }
+        .worker-active { animation: pulse-blue 2s infinite; border-color: #3b82f6 !important; }
+        
+        .glass-panel { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(8px); }
+    </style>
+</head>
+<body class="p-2 md:p-4 flex flex-col">
+    <!-- max-w-full pour occuper tout l'écran -->
+    <div class="max-w-full mx-auto w-full flex flex-col h-full space-y-3">
+        
+        <!-- Header -->
+        <header class="flex items-center gap-6 border-b border-slate-800 pb-3">
+            <div class="flex-shrink-0">
+                <h1 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">
+                    FORCE BRUTE V7
+                </h1>
+                <p class="text-[9px] text-slate-500 uppercase tracking-widest">Ahmed - Nitro Edition</p>
+            </div>
+
+            <!-- Barre de sécurité -->
+            <div id="securityHeader" class="flex-grow stats-card px-4 py-2 rounded-xl flex flex-col justify-center border-blue-500/20 shadow-inner">
+                <div class="flex justify-between text-[10px] font-bold mb-1.5">
+                    <div class="flex items-center gap-2">
+                        <span class="text-slate-400 uppercase tracking-tighter text-[9px]">Analyse de Robustesse :</span>
+                        <span id="securityVerdict" class="tracking-widest font-black text-blue-400">EN ATTENTE</span>
+                    </div>
+                    <div class="flex gap-4">
+                        <span id="timeToCrack" class="text-slate-400 font-mono text-[9px]">---</span>
+                        <span id="entropyDisplay" class="text-slate-500 font-mono">0 bits</span>
+                    </div>
+                </div>
+                <div class="security-bar-container">
+                    <div id="securityBar"></div>
+                </div>
+            </div>
+
+            <div class="flex-shrink-0 flex gap-2">
+                <div class="bg-slate-900 px-4 py-1.5 rounded-lg border border-slate-800 text-center min-w-[80px]">
+                    <span class="text-[8px] text-slate-500 block uppercase font-bold">Mode</span>
+                    <span id="currentMode" class="text-xs font-mono font-bold text-red-500">STANDBY</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Layout Principal -->
+        <div class="grid grid-cols-12 gap-3 flex-1 overflow-hidden">
+            
+            <!-- SECTION CONSEILS POST-ANALYSE -->
+            <div class="col-span-3 flex flex-col overflow-hidden">
+                <section class="stats-card rounded-xl flex flex-col h-full overflow-hidden">
+                    <div class="p-3 border-b border-slate-700 bg-slate-900/50">
+                        <h2 class="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Rapport d'Analyse</h2>
+                    </div>
+                    
+                    <div id="waitingMessage" class="flex-1 flex flex-col items-center justify-center p-6 text-center space-y-3">
+                        <div class="w-8 h-8 border-2 border-slate-700 border-t-blue-500 rounded-full animate-spin"></div>
+                        <p class="text-[10px] text-slate-500 uppercase font-bold">En attente de la fin de l'analyse...</p>
+                    </div>
+
+                    <div id="adviceContainer" class="hidden overflow-y-auto flex-1 p-4 space-y-2">
+                        <!-- Les conseils seront injectés ici APRES l'analyse -->
+                    </div>
+
+                    <div id="perfectStatus" class="hidden p-4 bg-green-900/20 border-t border-green-500/30 text-center">
+                        <span class="text-xs font-bold text-green-400 italic">Ton mot de passe est déjà très bon ! ✨</span>
+                    </div>
+                </section>
+            </div>
+
+            <div class="col-span-3 flex flex-col space-y-3">
+                <section class="stats-card p-4 rounded-xl">
+                    <h2 class="text-[10px] font-bold mb-3 uppercase text-blue-400 tracking-widest">Configuration</h2>
+                    <div class="space-y-4">
+                        <div class="relative">
+                            <input type="text" id="targetInput" value="soleil" maxlength="15" 
+                                class="w-full bg-black/50 border border-slate-700 rounded-lg p-2.5 text-white font-mono text-sm focus:ring-1 focus:ring-blue-500 outline-none transition-all">
+                            <span class="absolute -top-2 left-2 bg-slate-900 px-1 text-[8px] text-slate-500 font-bold uppercase">Cible_String</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between bg-slate-900/40 p-2 rounded-lg border border-slate-800">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" id="useAutoLength" checked class="w-3.5 h-3.5 accent-blue-500">
+                                <span class="text-[10px] uppercase font-bold text-slate-400">Détection auto</span>
+                            </label>
+                            <div id="detectedLengthBadge" class="text-[10px] font-mono text-blue-400 font-bold px-2 bg-blue-900/20 rounded">?</div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-1.5">
+                            <label class="flex items-center gap-2 p-1.5 bg-slate-900/30 rounded border border-slate-800/50 cursor-pointer">
+                                <input type="checkbox" id="useLower" checked class="w-3.5 h-3.5 accent-blue-500"> <span class="text-[10px]">a-z</span>
+                            </label>
+                            <label class="flex items-center gap-2 p-1.5 bg-slate-900/30 rounded border border-slate-800/50 cursor-pointer">
+                                <input type="checkbox" id="useUpper" checked class="w-3.5 h-3.5 accent-blue-500"> <span class="text-[10px]">A-Z</span>
+                            </label>
+                            <label class="flex items-center gap-2 p-1.5 bg-slate-900/30 rounded border border-slate-800/50 cursor-pointer">
+                                <input type="checkbox" id="useNumbers" checked class="w-3.5 h-3.5 accent-blue-500"> <span class="text-[10px]">0-9</span>
+                            </label>
+                            <label class="flex items-center gap-2 p-1.5 bg-slate-900/30 rounded border border-slate-800/50 cursor-pointer">
+                                <input type="checkbox" id="useSymbols" class="w-3.5 h-3.5 accent-blue-500"> <span class="text-[10px]">Symboles</span>
+                            </label>
+                        </div>
+                        <button id="startBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-2.5 rounded-lg transition-all uppercase text-[11px] tracking-widest shadow-lg shadow-blue-900/20">Lancer l'analyse</button>
+                        <button id="stopBtn" class="w-full bg-red-600 hover:bg-red-500 text-white font-black py-2.5 rounded-lg hidden uppercase text-[11px] tracking-widest">Arrêter</button>
+                    </div>
+                </section>
+
+                <section class="stats-card p-4 rounded-xl flex-1 flex flex-col justify-around">
+                    <div class="border-l-2 border-green-500 pl-4">
+                        <span class="text-[9px] text-slate-500 uppercase font-bold tracking-tighter">Vitesse Flux</span>
+                        <div id="statSpeed" class="text-xl font-mono font-bold text-green-400">0 h/s</div>
+                    </div>
+                    <div class="border-l-2 border-blue-500 pl-4">
+                        <span class="text-[9px] text-slate-500 uppercase font-bold tracking-tighter">Tentatives</span>
+                        <div id="statCount" class="text-xl font-mono font-bold text-white truncate">0</div>
+                    </div>
+                    <div class="border-l-2 border-purple-500 pl-4">
+                        <span class="text-[9px] text-slate-500 uppercase font-bold tracking-tighter">Temps d'exécution</span>
+                        <div id="elapsedTime" class="text-xl font-mono font-bold text-purple-400">00:00:00</div>
+                    </div>
+                </section>
+            </div>
+
+            <div class="col-span-6 flex flex-col space-y-3 overflow-hidden">
+                <div class="bg-slate-900/50 border border-slate-800 p-3 rounded-xl shadow-inner">
+                    <h3 class="text-[9px] font-bold text-slate-500 uppercase mb-2">Cluster CPU (<span id="coreCountDisplay">0</span> threads)</h3>
+                    <div id="workerGrid" class="grid grid-cols-8 gap-1.5"></div>
+                </div>
+
+                <div class="stats-card rounded-xl overflow-hidden flex flex-col flex-1">
+                    <div class="bg-black/40 px-3 py-1.5 border-b border-slate-700 flex justify-between items-center">
+                        <span id="terminalStatus" class="text-[9px] font-mono text-blue-400 font-bold uppercase">TERMINAL LOGS (Détails des calculs)</span>
+                    </div>
+                    <div id="terminal" class="p-3 overflow-y-auto flex-1 code-font text-[11px] space-y-1">
+                        <div class="text-slate-600 italic">Bonjour Ahmed. Entrez un mot de passe et lancez l'analyse pour voir les conseils.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const workerCode = `
+            self.onmessage = function(e) {
+                const { target, charset, startFrom, step, minLen, maxLen } = e.data;
+                const charsetLen = charset.length;
+                const targetLen = target.length;
+                const targetCodes = new Uint8Array(target.split('').map(c => c.charCodeAt(0)));
+                const charsetCodes = new Uint8Array(charset.split('').map(c => c.charCodeAt(0)));
+                
+                let indices = new Uint32Array(16); 
+                let currentLen = minLen;
+
+                // Calcul de l'offset BigInt pour le thread spécifique
+                let startNum = BigInt(startFrom);
+                let tempNum = startNum;
+                for(let i = 0; i < currentLen; i++) {
+                    indices[i] = Number(tempNum % BigInt(charsetLen));
+                    tempNum = tempNum / BigInt(charsetLen);
+                }
+
+                const batchSize = 500000; 
+                function run() {
+                    for (let b = 0; b < batchSize; b++) {
+                        if (currentLen === targetLen) {
+                            let match = true;
+                            for (let j = 0; j < targetLen; j++) {
+                                if (charsetCodes[indices[j]] !== targetCodes[targetLen - 1 - j]) {
+                                    match = false;
+                                    break;
+                                }
+                            }
+                            if (match) {
+                                let res = "";
+                                for(let j = currentLen - 1; j >= 0; j--) res += charset[indices[j]];
+                                self.postMessage({ type: 'FOUND', combo: res });
+                                return;
+                            }
+                        }
+                        if (currentLen > maxLen) { self.postMessage({ type: 'DONE' }); return; }
+
+                        // On saute de "step" (nombre de coeurs) à chaque itération pour répartir le travail
+                        for(let s = 0; s < step; s++) {
+                            let carry = 1;
+                            for (let i = 0; i < currentLen; i++) {
+                                indices[i] += carry;
+                                if (indices[i] < charsetLen) { carry = 0; break; } 
+                                else { indices[i] = 0; carry = 1; if (i === currentLen - 1) currentLen++; }
+                            }
+                        }
+                    }
+                    self.postMessage({ type: 'PROGRESS', count: batchSize * step });
+                    setTimeout(run, 0);
+                }
+                run();
+            };
+        `;
+
+        const coreCount = navigator.hardwareConcurrency || 4;
+        let workers = [], isRunning = false, totalAttempts = 0n, startTime = 0, timerInterval, speedInterval;
+
+        document.getElementById('coreCountDisplay').innerText = coreCount;
+        
+        function log(msg, type = 'info') {
+            const term = document.getElementById('terminal');
+            const div = document.createElement('div');
+            div.className = { info: 'text-slate-400', success: 'text-green-400 font-bold', error: 'text-red-400', warn: 'text-blue-400', tech: 'text-slate-500 font-mono text-[10px]' }[type];
+            div.innerHTML = `<span class="opacity-30 mr-2">></span>${msg}`;
+            term.appendChild(div);
+            term.scrollTop = term.scrollHeight;
+        }
+
+        function calculateEntropy(str) {
+            const len = str.length; if (len === 0) return 0;
+            const freq = {}; for (let c of str) freq[c] = (freq[c] || 0) + 1;
+            let entropy = 0; for (let c in freq) { let p = freq[c]/len; entropy -= p * Math.log2(p); }
+            return entropy * len;
+        }
+
+        function updateSecurityUI(password) {
+            const entropy = Math.round(calculateEntropy(password) * 10) / 10;
+            const bar = document.getElementById('securityBar');
+            const verdict = document.getElementById('securityVerdict');
+            
+            document.getElementById('entropyDisplay').innerText = `${entropy} bits`;
+            
+            let score = 0;
+            if (password.length >= 8) score += 20;
+            if (password.length >= 12) score += 20;
+            if (/[A-Z]/.test(password)) score += 20;
+            if (/[0-9]/.test(password)) score += 20;
+            if (/[^A-Za-z0-9]/.test(password)) score += 20;
+            
+            bar.style.width = score + "%";
+            bar.style.backgroundColor = score < 40 ? "#ef4444" : (score < 80 ? "#fbbf24" : "#10b981");
+            verdict.innerText = score < 40 ? "FAIBLE" : (score < 80 ? "MOYEN" : "EXCELLENT");
+            verdict.className = score < 40 ? "text-red-500 font-black" : (score < 80 ? "text-yellow-500 font-black" : "text-green-400 font-black");
+
+            const charsetSize = 62; 
+            const timeS = Math.pow(charsetSize, password.length) / 500_000_000;
+            document.getElementById('timeToCrack').innerText = timeS < 60 ? "< 1 min" : (timeS > 31536000 ? "> 1 an" : Math.round(timeS/3600) + "h");
+        }
+
+        function showFinalReport(password) {
+            const container = document.getElementById('adviceContainer');
+            const perfectStatus = document.getElementById('perfectStatus');
+            const waiting = document.getElementById('waitingMessage');
+            
+            waiting.classList.add('hidden');
+            container.classList.remove('hidden');
+            container.innerHTML = "";
+
+            let score = 0;
+            const checks = [
+                { test: password.length >= 12, ok: "Longueur excellente (12+)", no: "Trop court : visez au moins 12 caractères." },
+                { test: /[A-Z]/.test(password), ok: "Majuscules détectées", no: "Manque de majuscules : mélangez les casses." },
+                { test: /[0-9]/.test(password), ok: "Chiffres détectés", no: "Aucun chiffre : ajoutez-en pour complexifier." },
+                { test: /[^A-Za-z0-9]/.test(password), ok: "Symboles détectés", no: "Pas de symboles : utilisez @, #, !, etc." }
+            ];
+
+            checks.forEach(c => {
+                if (c.test) score += 25;
+                const div = document.createElement('div');
+                div.className = `advice-item ${c.test ? 'advice-check' : 'advice-warn'}`;
+                div.innerHTML = `<strong>${c.test ? '✓' : '⚠️'}</strong> ${c.test ? c.ok : c.no}`;
+                container.appendChild(div);
+            });
+
+            if (score >= 100) {
+                perfectStatus.classList.remove('hidden');
+            } else {
+                perfectStatus.classList.add('hidden');
+            }
+        }
+
+        document.getElementById('targetInput').addEventListener('input', (e) => {
+            const val = e.target.value;
+            document.getElementById('detectedLengthBadge').innerText = val.length;
+            updateSecurityUI(val);
+            document.getElementById('waitingMessage').classList.remove('hidden');
+            document.getElementById('adviceContainer').classList.add('hidden');
+            document.getElementById('perfectStatus').classList.add('hidden');
+        });
+
+        async function start() {
+            const target = document.getElementById('targetInput').value;
+            const useAuto = document.getElementById('useAutoLength').checked;
+            const charsetParts = [];
+            if(document.getElementById('useLower').checked) charsetParts.push('abcdefghijklmnopqrstuvwxyz');
+            if(document.getElementById('useUpper').checked) charsetParts.push('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+            if(document.getElementById('useNumbers').checked) charsetParts.push('0123456789');
+            if(document.getElementById('useSymbols').checked) charsetParts.push('!@#$%^&*()-_=+[]{}|;:,.<>?');
+            const charset = charsetParts.join('');
+            
+            if(!target || !charset) return;
+
+            isRunning = true; totalAttempts = 0n; startTime = Date.now();
+            document.getElementById('terminal').innerHTML = "";
+            document.getElementById('startBtn').classList.add('hidden');
+            document.getElementById('stopBtn').classList.remove('hidden');
+            document.getElementById('currentMode').innerText = "RUNNING";
+
+            // Calculs techniques pour Ahmed
+            const totalCombos = Math.pow(charset.length, target.length);
+            log(`CALCUL : Taille du charset = ${charset.length} caractères`, "tech");
+            log(`CALCUL : Espace de recherche (Combinatoire) = ${charset.length}^${target.length} ≈ ${totalCombos.toExponential(2)} combinaisons`, "tech");
+            log(`CALCUL : Allocation de ${coreCount} workers avec step=${coreCount}`, "tech");
+
+            timerInterval = setInterval(() => {
+                const diff = new Date(Date.now() - startTime);
+                document.getElementById('elapsedTime').innerText = diff.toISOString().substr(11, 8);
+            }, 1000);
+
+            speedInterval = setInterval(() => {
+                const elapsed = (Date.now() - startTime) / 1000;
+                if(elapsed > 0) document.getElementById('statSpeed').innerText = Math.floor(Number(totalAttempts) / elapsed).toLocaleString() + " h/s";
+            }, 500);
+
+            log(`INIT : Lancement du cluster de décryptage...`, "warn");
+            const blob = new Blob([workerCode], { type: 'application/javascript' });
+            const workerUrl = URL.createObjectURL(blob);
+            const minL = useAuto ? target.length : 1;
+            const maxL = useAuto ? target.length : 15;
+
+            for (let i = 0; i < coreCount; i++) {
+                const worker = new Worker(workerUrl);
+                document.getElementById(`worker-pill-${i}`).classList.add('worker-active');
+                
+                log(`THREAD ${i} : Démarrage à l'indice initial ${i}...`, "tech");
+
+                worker.onmessage = (e) => {
+                    if (e.data.type === 'PROGRESS') {
+                        totalAttempts += BigInt(e.data.count);
+                        document.getElementById('statCount').innerText = totalAttempts.toLocaleString();
+                    } else if (e.data.type === 'FOUND') finish(e.data.combo);
+                };
+                worker.postMessage({ target, charset, startFrom: i, step: coreCount, minLen: minL, maxLen: maxL });
+                workers.push(worker);
+            }
+        }
+
+        function finish(combo) {
+            log(`SUCCÈS : Cible trouvée ! Resultat: [${combo}]`, "success");
+            log(`STAT : Terminé après ${totalAttempts.toLocaleString()} tests.`, "tech");
+            showFinalReport(combo);
+            stopAll();
+        }
+
+        function stopAll() {
+            isRunning = false; workers.forEach(w => w.terminate()); workers = [];
+            clearInterval(timerInterval); clearInterval(speedInterval);
+            document.getElementById('startBtn').classList.remove('hidden');
+            document.getElementById('stopBtn').classList.add('hidden');
+            document.getElementById('currentMode').innerText = "IDLE";
+            document.querySelectorAll('.worker-active').forEach(p => p.classList.remove('worker-active'));
+        }
+
+        // Init UI
+        const workerGrid = document.getElementById('workerGrid');
+        for(let i=0; i<coreCount; i++) {
+            const pill = document.createElement('div');
+            pill.id = `worker-pill-${i}`;
+            pill.className = "border border-slate-800 p-2 rounded text-[10px] text-center bg-slate-800/20";
+            pill.innerText = `THREAD ${i}`;
+            workerGrid.appendChild(pill);
+        }
+        updateSecurityUI(document.getElementById('targetInput').value);
+        document.getElementById('detectedLengthBadge').innerText = document.getElementById('targetInput').value.length;
+
+        document.getElementById('startBtn').addEventListener('click', start);
+        document.getElementById('stopBtn').addEventListener('click', stopAll);
+    </script>
+</body>
+</html>
