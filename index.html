@@ -10,14 +10,14 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Ahmed V9">
     
-    <!-- Manifest embarqué pour éviter les erreurs de fichiers externes sur GitHub -->
-    <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Ahmed%20BruteForce%20V9%22,%22short_name%22:%22AhmedV9%22,%22display%22:%22standalone%22,%22background_color%22:%22%23020617%22,%22theme_color%22:%22%23020617%22}">
+    <!-- Manifest embarqué pour compatibilité PC/Android/iOS -->
+    <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Ahmed%20BruteForce%20V9%22,%22short_name%22:%22AhmedV9%22,%22display%22:%22standalone%22,%22background_color%22:%22%23020617%22,%22theme_color%22:%22%23020617%22,%22icons%22:[{%22src%22:%22https://cdn-icons-png.flaticon.com/512/2092/2092663.png%22,%22sizes%22:%22512x512%22,%22type%22:%22image/png%22}]}">
 
     <title>BruteForce Ultra-Performance - Ahmed V9</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;700;900&display=swap');
         
         html, body {
             height: 100%;
@@ -75,36 +75,33 @@
         }
     </style>
 </head>
-<body class="p-2 md:p-4">
-    <!-- Pop-up d'installation iPhone stylisée -->
+<body class="p-2 md:p-6">
+    <!-- Pop-up d'installation dynamique -->
     <div id="installToast" class="flex flex-col items-center gap-3">
-        <p class="text-xs font-bold text-center text-white">
-            INSTALLATION IPHONE<br>
-            <span class="text-slate-400 font-normal">Appuyez sur</span> 
-            <svg class="inline-block mx-1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
-            <span class="text-slate-400 font-normal">puis sur</span> <br>
-            <span class="text-blue-400 italic">"Sur l'écran d'accueil"</span>
+        <p id="installMessage" class="text-xs font-bold text-center text-white">
+            INSTALLATION<br>
+            <span class="text-slate-400 font-normal">Initialisation...</span>
         </p>
         <button onclick="document.getElementById('installToast').classList.remove('show')" class="text-[9px] text-slate-500 uppercase border border-slate-700 px-3 py-1 rounded-full">Fermer</button>
     </div>
 
-    <div class="max-w-full mx-auto w-full flex flex-col h-full space-y-3">
-        <header class="flex flex-col md:flex-row items-center gap-4 md:gap-6 border-b border-slate-800 pb-3">
+    <div class="max-w-7xl mx-auto w-full flex flex-col h-full space-y-4">
+        <header class="flex flex-col md:flex-row items-center gap-4 md:gap-6 border-b border-slate-800 pb-4">
             <div class="flex-shrink-0 text-center md:text-left">
-                <h1 class="text-xl md:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400 uppercase">
+                <h1 class="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400 uppercase tracking-tighter">
                     Force Brute V9
                 </h1>
-                <p class="text-[9px] text-slate-500 uppercase tracking-widest">Ahmed - Nitro Engine</p>
+                <p class="text-[10px] text-slate-500 uppercase tracking-[0.3em] font-bold">Ahmed - Nitro Engine</p>
             </div>
 
-            <div id="securityHeader" class="flex-grow w-full stats-card px-4 py-2 rounded-xl flex flex-col justify-center border-blue-500/20 shadow-inner">
-                <div class="flex justify-between text-[10px] font-bold mb-1.5">
+            <div id="securityHeader" class="flex-grow w-full stats-card px-6 py-3 rounded-2xl flex flex-col justify-center border-blue-500/20 shadow-inner">
+                <div class="flex justify-between text-[11px] font-bold mb-2">
                     <div class="flex items-center gap-2">
-                        <span class="text-slate-400 uppercase tracking-tighter text-[8px]">Robustesse :</span>
+                        <span class="text-slate-500 uppercase tracking-widest text-[9px]">Robustesse :</span>
                         <span id="securityVerdict" class="tracking-widest font-black text-blue-400">ANALYSE...</span>
                     </div>
-                    <div class="flex gap-4">
-                        <span id="timeToCrack" class="text-slate-400 font-mono text-[9px]">---</span>
+                    <div class="flex gap-6">
+                        <span id="timeToCrack" class="text-slate-400 font-mono text-[10px]">---</span>
                         <span id="entropyDisplay" class="text-slate-500 font-mono hidden md:inline">0 bits</span>
                     </div>
                 </div>
@@ -113,95 +110,101 @@
                 </div>
             </div>
 
-            <div class="flex-shrink-0 flex gap-2 w-full md:w-auto items-center">
-                <button id="installAppBtn" class="bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-bold py-2 px-4 rounded-lg flex items-center gap-2 shadow-lg transition-all active:scale-95">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                    INSTALLER
+            <div class="flex-shrink-0 flex gap-3 w-full md:w-auto items-center">
+                <button id="installAppBtn" class="bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-black py-3 px-6 rounded-xl flex items-center gap-2 shadow-lg transition-all active:scale-95 uppercase tracking-widest">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Installer
                 </button>
-                <div class="bg-slate-900 px-4 py-1.5 rounded-lg border border-slate-800 text-center flex-grow">
-                    <span class="text-[8px] text-slate-500 block uppercase font-bold tracking-tighter">Statut</span>
-                    <span id="currentMode" class="text-xs font-mono font-bold text-blue-500 uppercase tracking-tighter">Veille</span>
+                <div class="bg-slate-900 px-5 py-2 rounded-xl border border-slate-800 text-center flex-grow min-w-[100px]">
+                    <span class="text-[9px] text-slate-500 block uppercase font-bold tracking-tighter">Moteur</span>
+                    <span id="currentMode" class="text-xs font-mono font-bold text-blue-500 uppercase tracking-tighter">Ready</span>
                 </div>
             </div>
         </header>
 
-        <div class="flex flex-col lg:grid lg:grid-cols-12 gap-3 flex-1 overflow-hidden">
+        <div class="flex flex-col lg:grid lg:grid-cols-12 gap-4 flex-1 overflow-hidden">
             <!-- Rapport -->
-            <div class="order-3 lg:order-1 lg:col-span-3 flex flex-col overflow-hidden h-[180px] lg:h-full">
-                <section class="stats-card rounded-xl flex flex-col h-full overflow-hidden">
-                    <div class="p-3 border-b border-slate-700 bg-slate-900/50">
-                        <h2 class="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Rapport de Sécurité</h2>
+            <div class="order-3 lg:order-1 lg:col-span-3 flex flex-col overflow-hidden h-[200px] lg:h-full">
+                <section class="stats-card rounded-2xl flex flex-col h-full overflow-hidden">
+                    <div class="p-4 border-b border-slate-700 bg-slate-900/50">
+                        <h2 class="text-[11px] font-bold text-blue-400 uppercase tracking-widest">Audit de Sécurité</h2>
                     </div>
                     <div id="waitingMessage" class="flex-1 flex flex-col items-center justify-center p-6 text-center">
-                        <div class="w-6 h-6 border-2 border-slate-700 border-t-blue-500 rounded-full animate-spin mb-2"></div>
-                        <p class="text-[9px] text-slate-500 uppercase font-bold tracking-widest">Calcul en cours...</p>
+                        <div class="w-8 h-8 border-2 border-slate-700 border-t-blue-500 rounded-full animate-spin mb-3"></div>
+                        <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Initialisation...</p>
                     </div>
-                    <div id="adviceContainer" class="hidden overflow-y-auto flex-1 p-4 space-y-2"></div>
-                    <div id="perfectStatus" class="hidden p-3 bg-green-900/20 border-t border-green-500/30 text-center">
-                        <span class="text-green-400 font-bold italic text-[10px]">Système Ahmed Inviolable ! ✨</span>
+                    <div id="adviceContainer" class="hidden overflow-y-auto flex-1 p-5 space-y-3"></div>
+                    <div id="perfectStatus" class="hidden p-4 bg-green-900/20 border-t border-green-500/30 text-center">
+                        <span class="text-green-400 font-bold italic text-[11px]">Protocole Ahmed Inviolable ! ✨</span>
                     </div>
                 </section>
             </div>
 
             <!-- Contrôles -->
-            <div class="order-1 lg:order-2 lg:col-span-3 flex flex-col space-y-3">
-                <section class="stats-card p-4 rounded-xl">
-                    <h2 class="text-[10px] font-bold mb-3 uppercase text-blue-400 tracking-widest">Configuration</h2>
-                    <div class="space-y-4">
+            <div class="order-1 lg:order-2 lg:col-span-3 flex flex-col space-y-4">
+                <section class="stats-card p-5 rounded-2xl">
+                    <h2 class="text-[11px] font-bold mb-4 uppercase text-blue-400 tracking-widest">Paramètres</h2>
+                    <div class="space-y-5">
                         <div class="relative">
-                            <input type="text" id="targetInput" value="soleil" maxlength="15" 
-                                class="w-full bg-black/50 border border-slate-700 rounded-lg p-3 text-white font-mono text-sm focus:ring-1 focus:ring-blue-500 outline-none transition-all">
-                            <span class="absolute -top-2 left-2 bg-slate-900 px-1 text-[8px] text-slate-500 font-bold uppercase">Mot de passe cible</span>
+                            <input type="text" id="targetInput" value="ahmed" maxlength="15" 
+                                class="w-full bg-black/50 border border-slate-700 rounded-xl p-4 text-white font-mono text-sm focus:ring-2 focus:ring-blue-500/50 outline-none transition-all">
+                            <span class="absolute -top-2 left-3 bg-slate-900 px-1.5 text-[9px] text-slate-500 font-bold uppercase">Cible</span>
                         </div>
                         
-                        <div class="grid grid-cols-2 gap-1.5">
-                            <label class="flex items-center gap-2 p-2 bg-slate-900/30 rounded border border-slate-800/50 cursor-pointer">
-                                <input type="checkbox" id="useLower" checked class="accent-blue-500"> <span class="text-[10px]">a-z</span>
+                        <div class="grid grid-cols-2 gap-2">
+                            <label class="flex items-center gap-2 p-3 bg-slate-900/30 rounded-lg border border-slate-800/50 cursor-pointer hover:bg-slate-800/50 transition-colors">
+                                <input type="checkbox" id="useLower" checked class="w-4 h-4 accent-blue-500"> <span class="text-[11px] font-mono">a-z</span>
                             </label>
-                            <label class="flex items-center gap-2 p-2 bg-slate-900/30 rounded border border-slate-800/50 cursor-pointer">
-                                <input type="checkbox" id="useUpper" checked class="accent-blue-500"> <span class="text-[10px]">A-Z</span>
+                            <label class="flex items-center gap-2 p-3 bg-slate-900/30 rounded-lg border border-slate-800/50 cursor-pointer hover:bg-slate-800/50 transition-colors">
+                                <input type="checkbox" id="useUpper" checked class="w-4 h-4 accent-blue-500"> <span class="text-[11px] font-mono">A-Z</span>
                             </label>
-                            <label class="flex items-center gap-2 p-2 bg-slate-900/30 rounded border border-slate-800/50 cursor-pointer">
-                                <input type="checkbox" id="useNumbers" checked class="accent-blue-500"> <span class="text-[10px]">0-9</span>
+                            <label class="flex items-center gap-2 p-3 bg-slate-900/30 rounded-lg border border-slate-800/50 cursor-pointer hover:bg-slate-800/50 transition-colors">
+                                <input type="checkbox" id="useNumbers" checked class="w-4 h-4 accent-blue-500"> <span class="text-[11px] font-mono">0-9</span>
                             </label>
-                            <label class="flex items-center gap-2 p-2 bg-slate-900/30 rounded border border-slate-800/50 cursor-pointer">
-                                <input type="checkbox" id="useSymbols" class="accent-blue-500"> <span class="text-[10px]">!@#</span>
+                            <label class="flex items-center gap-2 p-3 bg-slate-900/30 rounded-lg border border-slate-800/50 cursor-pointer hover:bg-slate-800/50 transition-colors">
+                                <input type="checkbox" id="useSymbols" class="w-4 h-4 accent-blue-500"> <span class="text-[11px] font-mono">!@#</span>
                             </label>
                         </div>
-                        <button id="startBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-3 rounded-lg transition-all uppercase text-[11px] tracking-widest active:scale-95">Lancer l'Analyse</button>
-                        <button id="stopBtn" class="w-full bg-red-600 hover:bg-red-500 text-white font-black py-3 rounded-lg hidden uppercase text-[11px] tracking-widest">Interrompre</button>
+                        <button id="startBtn" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black py-4 rounded-xl transition-all uppercase text-xs tracking-[0.2em] shadow-lg shadow-blue-900/20 active:scale-95">Executer Cluster</button>
+                        <button id="stopBtn" class="w-full bg-red-600 hover:bg-red-500 text-white font-black py-4 rounded-xl hidden uppercase text-xs tracking-[0.2em] shadow-lg shadow-red-900/20">Terminer Processus</button>
                     </div>
                 </section>
 
-                <section class="stats-card p-4 rounded-xl flex-1 flex flex-col justify-around">
-                    <div class="border-l-2 border-green-500 pl-4">
-                        <span class="text-[9px] text-slate-500 uppercase font-bold tracking-tighter">Vitesse</span>
-                        <div id="statSpeed" class="text-lg font-mono font-bold text-green-400 leading-none">0 h/s</div>
+                <section class="stats-card p-5 rounded-2xl flex-1 flex flex-col justify-between">
+                    <div class="border-l-4 border-green-500 pl-4 py-1">
+                        <span class="text-[10px] text-slate-500 uppercase font-black tracking-tighter">Débit</span>
+                        <div id="statSpeed" class="text-xl font-mono font-bold text-green-400 leading-none">0 h/s</div>
                     </div>
-                    <div class="border-l-2 border-blue-500 pl-4">
-                        <span class="text-[9px] text-slate-500 uppercase font-bold tracking-tighter">Tentatives</span>
-                        <div id="statCount" class="text-lg font-mono font-bold text-white leading-none truncate">0</div>
+                    <div class="border-l-4 border-blue-500 pl-4 py-1">
+                        <span class="text-[10px] text-slate-500 uppercase font-black tracking-tighter">Itérations</span>
+                        <div id="statCount" class="text-xl font-mono font-bold text-white leading-none truncate">0</div>
                     </div>
-                    <div class="border-l-2 border-purple-500 pl-4">
-                        <span class="text-[9px] text-slate-500 uppercase font-bold tracking-tighter">Chronomètre</span>
-                        <div id="elapsedTime" class="text-lg font-mono font-bold text-purple-400 leading-none">00:00:00</div>
+                    <div class="border-l-4 border-purple-500 pl-4 py-1">
+                        <span class="text-[10px] text-slate-500 uppercase font-black tracking-tighter">Uptime</span>
+                        <div id="elapsedTime" class="text-xl font-mono font-bold text-purple-400 leading-none">00:00:00</div>
                     </div>
                 </section>
             </div>
 
             <!-- Terminal -->
-            <div class="order-2 lg:order-3 lg:col-span-6 flex flex-col space-y-3 overflow-hidden h-[350px] lg:h-full">
-                <div class="bg-slate-900/50 border border-slate-800 p-3 rounded-xl">
-                    <h3 class="text-[9px] font-bold text-slate-500 uppercase mb-2">Cluster CPU (<span id="coreCountDisplay">0</span> threads actifs)</h3>
-                    <div id="workerGrid" class="grid grid-cols-4 sm:grid-cols-8 gap-1.5"></div>
+            <div class="order-2 lg:order-3 lg:col-span-6 flex flex-col space-y-4 overflow-hidden h-[400px] lg:h-full">
+                <div class="bg-slate-900/50 border border-slate-800 p-4 rounded-2xl">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Cluster CPU (<span id="coreCountDisplay">0</span> threads)</h3>
+                        <div class="flex gap-1">
+                            <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                        </div>
+                    </div>
+                    <div id="workerGrid" class="grid grid-cols-4 sm:grid-cols-8 md:grid-cols-12 lg:grid-cols-8 gap-2"></div>
                 </div>
 
-                <div class="stats-card rounded-xl overflow-hidden flex flex-col flex-1">
-                    <div class="bg-black/40 px-3 py-2 border-b border-slate-700 flex justify-between">
-                        <span class="text-[9px] font-mono text-blue-400 font-bold uppercase tracking-widest">Système Log Ahmed v9.1</span>
+                <div class="stats-card rounded-2xl overflow-hidden flex flex-col flex-1 shadow-2xl">
+                    <div class="bg-black/40 px-4 py-3 border-b border-slate-700 flex justify-between items-center">
+                        <span class="text-[10px] font-mono text-blue-400 font-black uppercase tracking-widest">Ahmed Console Output</span>
+                        <span class="text-[8px] text-slate-600 font-mono">V9.1.4-STABLE</span>
                     </div>
-                    <div id="terminal" class="p-3 overflow-y-auto flex-1 code-font text-[10px] space-y-1 bg-black/20">
-                        <div class="text-slate-600 italic">Moteur prêt. En attente d'instruction...</div>
+                    <div id="terminal" class="p-4 overflow-y-auto flex-1 code-font text-[11px] space-y-1.5 bg-black/30">
+                        <div class="text-slate-600 italic">Prêt pour l'analyse brute force...</div>
                     </div>
                 </div>
             </div>
@@ -209,7 +212,7 @@
     </div>
 
     <script>
-        // LE WORKER REEL
+        // LE WORKER
         const workerCode = `
             self.onmessage = function(e) {
                 const { target, charset, startFrom, step } = e.data;
@@ -225,7 +228,7 @@
                     tempNum = tempNum / BigInt(charsetLen);
                 }
                 
-                const batchSize = 200000;
+                const batchSize = 250000;
                 function run() {
                     for (let b = 0; b < batchSize; b++) {
                         let match = true;
@@ -265,8 +268,8 @@
         for(let i=0; i<coreCount; i++){
             const d = document.createElement('div');
             d.id = `pill-${i}`;
-            d.className = "border border-slate-700 bg-slate-800/20 p-2 rounded text-[9px] text-center font-bold text-slate-500 transition-all";
-            d.innerText = `C${i}`;
+            d.className = "border border-slate-700 bg-slate-800/20 p-2.5 rounded-lg text-[10px] text-center font-black text-slate-500 transition-all duration-300";
+            d.innerText = `T${i+1}`;
             grid.appendChild(d);
         }
 
@@ -274,9 +277,10 @@
             const term = document.getElementById('terminal');
             const div = document.createElement('div');
             div.className = { info: 'text-slate-400', success: 'text-green-400 font-bold', error: 'text-red-400', warn: 'text-blue-400' }[type];
-            div.innerHTML = `<span class="opacity-20 mr-2">></span>${msg}`;
+            div.innerHTML = `<span class="opacity-30 mr-2">>></span>${msg}`;
             term.appendChild(div);
             term.scrollTop = term.scrollHeight;
+            if(term.childNodes.length > 50) term.removeChild(term.firstChild);
         }
 
         function calculateEntropy(val) {
@@ -299,8 +303,8 @@
             
             bar.style.width = score + "%";
             bar.style.backgroundColor = score < 40 ? "#ef4444" : (score < 80 ? "#fbbf24" : "#10b981");
-            document.getElementById('securityVerdict').innerText = score < 40 ? "FAIBLE" : (score < 80 ? "MOYEN" : "EXCELLENT");
-            document.getElementById('timeToCrack').innerText = val.length < 5 ? "< 1s" : (val.length > 9 ? "> 1 an" : "Quelques min");
+            document.getElementById('securityVerdict').innerText = score < 40 ? "FAIBLE" : (score < 80 ? "MOYEN" : "OPTIMAL");
+            document.getElementById('timeToCrack').innerText = val.length < 5 ? "< 1 sec" : (val.length > 9 ? "> 1 siècle" : "Estimation variable");
             
             const cont = document.getElementById('adviceContainer');
             const perf = document.getElementById('perfectStatus');
@@ -308,14 +312,14 @@
             cont.classList.remove('hidden');
             cont.innerHTML = "";
             const items = [
-                { t: val.length >= 12, ok: "Longueur idéale", no: "Trop court" },
-                { t: /[A-Z]/.test(val), ok: "Majuscules détectées", no: "Ajoutez des majuscules" },
-                { t: /[0-9]/.test(val), ok: "Chiffres détectés", no: "Ajoutez des chiffres" }
+                { t: val.length >= 12, ok: "Longueur sécurisée", no: "Chaîne trop courte" },
+                { t: /[A-Z]/.test(val), ok: "Mixité de casse", no: "Manque de majuscules" },
+                { t: /[0-9]/.test(val), ok: "Chiffres inclus", no: "Manque de chiffres" }
             ];
             items.forEach(i => {
                 const d = document.createElement('div');
                 d.className = `advice-item ${i.t ? 'advice-check' : 'advice-warn'}`;
-                d.innerHTML = `<strong>${i.t ? '✓' : '⚠️'}</strong> ${i.t ? i.ok : i.no}`;
+                d.innerHTML = `<strong>${i.t ? 'OK' : 'KO'}</strong> ${i.t ? i.ok : i.no}`;
                 cont.appendChild(d);
             });
             if(score >= 100) perf.classList.remove('hidden'); else perf.classList.add('hidden');
@@ -335,7 +339,7 @@
             document.getElementById('startBtn').classList.add('hidden');
             document.getElementById('stopBtn').classList.remove('hidden');
             document.getElementById('currentMode').innerText = "RUNNING";
-            log("BOOTING CLUSTER...", "warn");
+            log("BOOTING NITRO ENGINE...", "warn");
 
             timerInterval = setInterval(() => {
                 const d = new Date(Date.now() - startTime);
@@ -344,7 +348,10 @@
 
             speedInterval = setInterval(() => {
                 const el = (Date.now() - startTime) / 1000;
-                if(el > 0) document.getElementById('statSpeed').innerText = Math.floor(Number(totalAttempts)/el).toLocaleString() + " h/s";
+                if(el > 0) {
+                    const speed = Math.floor(Number(totalAttempts)/el);
+                    document.getElementById('statSpeed').innerText = speed.toLocaleString() + " h/s";
+                }
                 document.getElementById('statCount').innerText = totalAttempts.toLocaleString();
             }, 500);
 
@@ -355,7 +362,10 @@
                 document.getElementById(`pill-${i}`).classList.add('worker-active');
                 w.onmessage = e => {
                     if(e.data.type==='PROGRESS') totalAttempts += BigInt(e.data.count);
-                    else if(e.data.type==='FOUND') { log("SUCCÈS: MOT DE PASSE TROUVÉ ["+e.data.combo+"]", "success"); stop(); }
+                    else if(e.data.type==='FOUND') { 
+                        log("CRACK SUCCESS: ["+e.data.combo+"]", "success"); 
+                        stop(); 
+                    }
                 };
                 w.postMessage({target, charset, startFrom: i, step: coreCount});
                 workers.push(w);
@@ -367,36 +377,51 @@
             clearInterval(timerInterval); clearInterval(speedInterval);
             document.getElementById('startBtn').classList.remove('hidden');
             document.getElementById('stopBtn').classList.add('hidden');
-            document.getElementById('currentMode').innerText = "VEILLE";
+            document.getElementById('currentMode').innerText = "READY";
             document.querySelectorAll('.worker-active').forEach(p => p.classList.remove('worker-active'));
-            log("SYSTÈME STOPPÉ.", "info");
+            log("THREAD TERMINATED.", "info");
         }
 
         document.getElementById('targetInput').addEventListener('input', e => updateUI(e.target.value));
         document.getElementById('startBtn').addEventListener('click', start);
         document.getElementById('stopBtn').addEventListener('click', stop);
-        updateUI("soleil");
+        updateUI("ahmed");
 
-        // GESTION INSTALLATION (Correction Erreur Blob)
+        // GESTION INSTALLATION UNIVERSELLE
         let deferredPrompt;
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
         window.addEventListener('beforeinstallprompt', e => { 
             e.preventDefault(); 
             deferredPrompt = e; 
-            log("OPTION D'INSTALLATION DÉTECTÉE", "warn");
+            log("INSTALLATEUR PC PRÊT", "warn");
         });
 
         document.getElementById('installAppBtn').addEventListener('click', async () => {
-            if(deferredPrompt){ 
-                deferredPrompt.prompt(); 
-                deferredPrompt = null; 
-            } else { 
-                document.getElementById('installToast').classList.add('show'); 
-                setTimeout(()=>document.getElementById('installToast').classList.remove('show'), 6000); 
+            const toast = document.getElementById('installToast');
+            const msg = document.getElementById('installMessage');
+
+            if (deferredPrompt) {
+                // Pour PC (Chrome/Edge)
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') log("INSTALLATION RÉUSSIE", "success");
+                deferredPrompt = null;
+            } else if (isIOS) {
+                // Pour iPhone
+                msg.innerHTML = `INSTALLATION IPHONE<br>
+                    <span class="text-slate-400 font-normal">Appuyez sur</span> 
+                    <svg class="inline-block mx-1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                    <span class="text-slate-400 font-normal">puis sur</span> <br>
+                    <span class="text-blue-400 italic font-bold">"Sur l'écran d'accueil"</span>`;
+                toast.classList.add('show');
+            } else {
+                // Fallback (déjà installé ou navigateur non compatible PWA)
+                msg.innerHTML = `SYSTÈME À JOUR<br><span class="text-slate-400 font-normal">L'application est déjà prête ou votre navigateur est en mode restreint.</span>`;
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 4000);
             }
         });
-
-        // Suppression de l'enregistrement ServiceWorker par blob (Cause de l'erreur TypeError)
-        // Sur GitHub Pages, l'installation fonctionnera via le Manifest Data URI ci-dessus.
     </script>
 </body>
 </html>
