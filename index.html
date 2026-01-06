@@ -2,13 +2,14 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#020617">
-    <title>BruteForce Ultra-Performance - Full Power Mode</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Ahmed V9">
     
-    <!-- Manifeste PWA intégré via Data URI pour GitHub Pages -->
-    <link rel="manifest" id="pwa-manifest">
-
+    <title>BruteForce Ultra-Performance - Ahmed V9</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap');
@@ -18,12 +19,12 @@
             margin: 0;
             padding: 0;
             overflow: hidden;
-        }
-
-        body { 
             background-color: #020617; 
             color: #f8fafc; 
             font-family: 'Inter', sans-serif; 
+        }
+
+        body { 
             display: flex;
             flex-direction: column;
         }
@@ -49,13 +50,6 @@
         }
         .worker-active { animation: pulse-blue 1.5s infinite; border-color: #3b82f6 !important; }
         
-        #installAppBtn { transition: all 0.3s ease; }
-        #installAppBtn:hover { transform: translateY(-1px); }
-
-        @media (max-width: 1024px) {
-            html, body { overflow-y: auto; height: auto; min-height: 100%; }
-        }
-
         #installToast {
             position: fixed;
             bottom: 20px;
@@ -70,12 +64,17 @@
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
         }
         #installToast.show { transform: translateX(-50%) translateY(0); }
+
+        @media (max-width: 1024px) {
+            html, body { overflow-y: auto; height: auto; min-height: 100%; }
+        }
     </style>
 </head>
 <body class="p-2 md:p-4">
+    <!-- Pop-up d'installation iPhone -->
     <div id="installToast" class="flex flex-col items-center gap-2">
-        <p class="text-[10px] font-bold text-center">Pour installer sur iPhone :<br>Appuyez sur <span class="text-blue-400">Partager</span> puis <span class="text-blue-400">Sur l'écran d'accueil</span></p>
-        <button onclick="document.getElementById('installToast').classList.remove('show')" class="text-[9px] text-slate-500 underline">Fermer</button>
+        <p class="text-[10px] font-bold text-center text-white">Installer sur iPhone :<br>Appuyez sur <span class="text-blue-400">Partager</span> puis <span class="text-blue-400">Sur l'écran d'accueil</span></p>
+        <button onclick="document.getElementById('installToast').classList.remove('show')" class="text-[9px] text-slate-500 underline uppercase">Fermer</button>
     </div>
 
     <div class="max-w-full mx-auto w-full flex flex-col h-full space-y-3">
@@ -104,18 +103,19 @@
             </div>
 
             <div class="flex-shrink-0 flex gap-2 w-full md:w-auto items-center">
-                <button id="installAppBtn" class="bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-bold py-2 px-3 rounded-lg flex items-center gap-2 shadow-lg shadow-blue-900/40 border border-blue-400/20">
+                <button id="installAppBtn" class="bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-bold py-2 px-3 rounded-lg flex items-center gap-2 shadow-lg shadow-blue-900/40 border border-blue-400/20 transition-all">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                    INSTALLER APP
+                    INSTALLER
                 </button>
                 <div class="bg-slate-900 px-4 py-1.5 rounded-lg border border-slate-800 text-center flex-grow md:min-w-[80px]">
-                    <span class="text-[8px] text-slate-500 block uppercase font-bold">Mode</span>
-                    <span id="currentMode" class="text-xs font-mono font-bold text-blue-500 uppercase">Standby</span>
+                    <span class="text-[8px] text-slate-500 block uppercase font-bold">Statut</span>
+                    <span id="currentMode" class="text-xs font-mono font-bold text-blue-500 uppercase tracking-tighter">Veille</span>
                 </div>
             </div>
         </header>
 
         <div class="flex flex-col lg:grid lg:grid-cols-12 gap-3 flex-1 overflow-hidden">
+            <!-- Rapport à gauche -->
             <div class="order-3 lg:order-1 lg:col-span-3 flex flex-col overflow-hidden h-[200px] lg:h-full">
                 <section class="stats-card rounded-xl flex flex-col h-full overflow-hidden">
                     <div class="p-3 border-b border-slate-700 bg-slate-900/50">
@@ -123,15 +123,16 @@
                     </div>
                     <div id="waitingMessage" class="flex-1 flex flex-col items-center justify-center p-6 text-center space-y-3">
                         <div class="w-8 h-8 border-2 border-slate-700 border-t-blue-500 rounded-full animate-spin"></div>
-                        <p class="text-[10px] text-slate-500 uppercase font-bold">En attente...</p>
+                        <p class="text-[10px] text-slate-500 uppercase font-bold">Analyse des critères...</p>
                     </div>
                     <div id="adviceContainer" class="hidden overflow-y-auto flex-1 p-4 space-y-2"></div>
                     <div id="perfectStatus" class="hidden p-4 bg-green-900/20 border-t border-green-500/30 text-center">
-                        <span class="text-xs font-bold text-green-400 italic text-[10px]">Mot de passe validé Ahmed ! ✨</span>
+                        <span class="text-xs font-bold text-green-400 italic text-[10px]">Sécurité Maximale Ahmed ! ✨</span>
                     </div>
                 </section>
             </div>
 
+            <!-- Configuration au centre -->
             <div class="order-1 lg:order-2 lg:col-span-3 flex flex-col space-y-3">
                 <section class="stats-card p-4 rounded-xl">
                     <h2 class="text-[10px] font-bold mb-3 uppercase text-blue-400 tracking-widest">Configuration</h2>
@@ -139,67 +140,59 @@
                         <div class="relative">
                             <input type="text" id="targetInput" value="soleil" maxlength="15" 
                                 class="w-full bg-black/50 border border-slate-700 rounded-lg p-3 text-white font-mono text-sm focus:ring-1 focus:ring-blue-500 outline-none transition-all">
-                            <span class="absolute -top-2 left-2 bg-slate-900 px-1 text-[8px] text-slate-500 font-bold uppercase">Cible_String</span>
+                            <span class="absolute -top-2 left-2 bg-slate-900 px-1 text-[8px] text-slate-500 font-bold uppercase">Cible</span>
                         </div>
                         
-                        <div class="flex items-center justify-between bg-slate-900/40 p-2 rounded-lg border border-slate-800">
-                            <label class="flex items-center gap-2 cursor-pointer">
-                                <input type="checkbox" id="useAutoLength" checked class="w-4 h-4 md:w-3.5 md:h-3.5 accent-blue-500">
-                                <span class="text-[10px] uppercase font-bold text-slate-400">Auto-détection</span>
-                            </label>
-                            <div id="detectedLengthBadge" class="text-[10px] font-mono text-blue-400 font-bold px-2 bg-blue-900/20 rounded">?</div>
-                        </div>
-
                         <div class="grid grid-cols-2 gap-1.5">
                             <label class="flex items-center gap-2 p-2 bg-slate-900/30 rounded border border-slate-800/50 cursor-pointer">
-                                <input type="checkbox" id="useLower" checked class="w-4 h-4 md:w-3.5 md:h-3.5 accent-blue-500"> <span class="text-[10px]">a-z</span>
+                                <input type="checkbox" id="useLower" checked class="accent-blue-500"> <span class="text-[10px]">a-z</span>
                             </label>
                             <label class="flex items-center gap-2 p-2 bg-slate-900/30 rounded border border-slate-800/50 cursor-pointer">
-                                <input type="checkbox" id="useUpper" checked class="w-4 h-4 md:w-3.5 md:h-3.5 accent-blue-500"> <span class="text-[10px]">A-Z</span>
+                                <input type="checkbox" id="useUpper" checked class="accent-blue-500"> <span class="text-[10px]">A-Z</span>
                             </label>
                             <label class="flex items-center gap-2 p-2 bg-slate-900/30 rounded border border-slate-800/50 cursor-pointer">
-                                <input type="checkbox" id="useNumbers" checked class="w-4 h-4 md:w-3.5 md:h-3.5 accent-blue-500"> <span class="text-[10px]">0-9</span>
+                                <input type="checkbox" id="useNumbers" checked class="accent-blue-500"> <span class="text-[10px]">0-9</span>
                             </label>
                             <label class="flex items-center gap-2 p-2 bg-slate-900/30 rounded border border-slate-800/50 cursor-pointer">
-                                <input type="checkbox" id="useSymbols" class="w-4 h-4 md:w-3.5 md:h-3.5 accent-blue-500"> <span class="text-[10px]">Symboles</span>
+                                <input type="checkbox" id="useSymbols" class="accent-blue-500"> <span class="text-[10px]">!@#</span>
                             </label>
                         </div>
-                        <button id="startBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-3 rounded-lg transition-all uppercase text-[11px] tracking-widest shadow-lg shadow-blue-900/20 active:scale-95">Lancer l'analyse</button>
+                        <button id="startBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-3 rounded-lg transition-all uppercase text-[11px] tracking-widest active:scale-95">Lancer l'Analyse</button>
                         <button id="stopBtn" class="w-full bg-red-600 hover:bg-red-500 text-white font-black py-3 rounded-lg hidden uppercase text-[11px] tracking-widest active:scale-95">Arrêter</button>
                     </div>
                 </section>
 
-                <section class="stats-card p-4 rounded-xl flex-1 grid grid-cols-1 md:grid-cols-3 lg:flex lg:flex-col gap-4">
-                    <div class="border-l-2 border-green-500 pl-4">
+                <section class="stats-card p-4 rounded-xl flex-1 flex flex-col justify-around">
+                    <div class="border-l-2 border-green-500 pl-4 mb-4">
                         <span class="text-[9px] text-slate-500 uppercase font-bold tracking-tighter">Vitesse Flux</span>
-                        <div id="statSpeed" class="text-lg md:text-xl font-mono font-bold text-green-400">0 h/s</div>
+                        <div id="statSpeed" class="text-lg font-mono font-bold text-green-400">0 h/s</div>
                     </div>
-                    <div class="border-l-2 border-blue-500 pl-4">
+                    <div class="border-l-2 border-blue-500 pl-4 mb-4">
                         <span class="text-[9px] text-slate-500 uppercase font-bold tracking-tighter">Tentatives</span>
-                        <div id="statCount" class="text-lg md:text-xl font-mono font-bold text-white truncate">0</div>
+                        <div id="statCount" class="text-lg font-mono font-bold text-white truncate">0</div>
                     </div>
                     <div class="border-l-2 border-purple-500 pl-4">
                         <span class="text-[9px] text-slate-500 uppercase font-bold tracking-tighter">Chrono</span>
-                        <div id="elapsedTime" class="text-lg md:text-xl font-mono font-bold text-purple-400">00:00:00</div>
+                        <div id="elapsedTime" class="text-lg font-mono font-bold text-purple-400">00:00:00</div>
                     </div>
                 </section>
             </div>
 
+            <!-- Terminal et Cluster à droite -->
             <div class="order-2 lg:order-3 lg:col-span-6 flex flex-col space-y-3 overflow-hidden h-[400px] lg:h-full">
                 <div class="bg-slate-900/50 border border-slate-800 p-3 rounded-xl shadow-inner">
                     <div class="flex justify-between items-center mb-2">
                         <h3 class="text-[9px] font-bold text-slate-500 uppercase">Cluster CPU (<span id="coreCountDisplay">0</span> threads)</h3>
-                        <span class="bg-blue-500/20 text-blue-400 text-[8px] px-2 py-0.5 rounded font-bold border border-blue-500/30 uppercase">100% Load activé</span>
                     </div>
                     <div id="workerGrid" class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-1.5"></div>
                 </div>
 
                 <div class="stats-card rounded-xl overflow-hidden flex flex-col flex-1">
-                    <div class="bg-black/40 px-3 py-1.5 border-b border-slate-700 flex justify-between items-center">
-                        <span id="terminalStatus" class="text-[9px] font-mono text-blue-400 font-bold uppercase">TERMINAL LOGS (Ahmed Edition)</span>
+                    <div class="bg-black/40 px-3 py-1.5 border-b border-slate-700">
+                        <span class="text-[9px] font-mono text-blue-400 font-bold uppercase tracking-widest">Console Log v9</span>
                     </div>
-                    <div id="terminal" class="p-3 overflow-y-auto flex-1 code-font text-[10px] md:text-[11px] space-y-1">
-                        <div class="text-slate-600 italic">Moteur prêt. Exploitation maximale des ressources...</div>
+                    <div id="terminal" class="p-3 overflow-y-auto flex-1 code-font text-[10px] md:text-[11px] space-y-1 bg-black/20">
+                        <div class="text-slate-600 italic">Ahmed - Système prêt...</div>
                     </div>
                 </div>
             </div>
@@ -207,104 +200,46 @@
     </div>
 
     <script>
-        // CONFIGURATION PWA DYNAMIQUE
-        const manifest = {
-            "name": "Force Brute Ahmed Nitro",
-            "short_name": "BruteForce",
-            "start_url": ".",
-            "display": "standalone",
-            "background_color": "#020617",
-            "theme_color": "#020617",
-            "description": "Analyseur de mot de passe haute performance",
-            "icons": [{
-                "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzNiODJmNiIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0xMiAyMmM1LjUyMyAwIDEwLTQuNDc3IDEwLTEwUzE3LjUyMyAyIDEyIDIgMiA2LjQ3NyAyIDEyczQuNDc3IDEwIDEwIDEwek0xMiAxNmw0LTQtNC00TTggMTJoOCIvPjwvc3ZnPg==",
-                "sizes": "512x512",
-                "type": "image/svg+xml",
-                "purpose": "any"
-            }]
-        };
-        const manifestStr = JSON.stringify(manifest);
-        const manifestBlob = new Blob([manifestStr], {type: 'application/json'});
-        document.getElementById('pwa-manifest').setAttribute('href', URL.createObjectURL(manifestBlob));
-
-        // SERVICE WORKER IN-LINE
-        const swCode = `
-            self.addEventListener('install', (e) => self.skipWaiting());
-            self.addEventListener('fetch', (e) => e.respondWith(fetch(e.request)));
-        `;
-        const swBlob = new Blob([swCode], {type: 'application/javascript'});
-        const swUrl = URL.createObjectURL(swBlob);
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register(swUrl).catch(() => {});
-        }
-
-        let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            document.getElementById('installAppBtn').classList.add('animate-bounce');
-        });
-
-        document.getElementById('installAppBtn').addEventListener('click', async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    document.getElementById('installAppBtn').classList.remove('animate-bounce');
-                }
-                deferredPrompt = null;
-            } else {
-                const toast = document.getElementById('installToast');
-                toast.classList.add('show');
-                setTimeout(() => toast.classList.remove('show'), 6000);
-            }
-        });
-
-        // WORKER BRUTE FORCE
+        // MOTEUR REEL
         const workerCode = `
             self.onmessage = function(e) {
-                const { target, charset, startFrom, step, minLen, maxLen } = e.data;
+                const { target, charset, startFrom, step } = e.data;
                 const charsetLen = charset.length;
                 const targetLen = target.length;
                 const targetCodes = new Uint8Array(target.split('').map(c => c.charCodeAt(0)));
                 const charsetCodes = new Uint8Array(charset.split('').map(c => c.charCodeAt(0)));
                 let indices = new Uint32Array(16); 
-                let currentLen = minLen;
+                let currentLen = targetLen;
                 let startNum = BigInt(startFrom);
                 let tempNum = startNum;
                 for(let i = 0; i < currentLen; i++) {
                     indices[i] = Number(tempNum % BigInt(charsetLen));
                     tempNum = tempNum / BigInt(charsetLen);
                 }
-                const batchSize = 1000000; 
+                const batchSize = 300000; 
                 function run() {
                     for (let b = 0; b < batchSize; b++) {
-                        if (currentLen === targetLen) {
-                            let match = true;
-                            for (let j = 0; j < targetLen; j++) {
-                                if (charsetCodes[indices[j]] !== targetCodes[targetLen - 1 - j]) {
-                                    match = false;
-                                    break;
-                                }
-                            }
-                            if (match) {
-                                let res = "";
-                                for(let j = currentLen - 1; j >= 0; j--) res += charset[indices[j]];
-                                self.postMessage({ type: 'FOUND', combo: res });
-                                return;
+                        let match = true;
+                        for (let j = 0; j < targetLen; j++) {
+                            if (charsetCodes[indices[j]] !== targetCodes[targetLen - 1 - j]) {
+                                match = false;
+                                break;
                             }
                         }
-                        if (currentLen > maxLen) { self.postMessage({ type: 'DONE' }); return; }
-                        for(let s = 0; s < step; s++) {
-                            let carry = 1;
-                            for (let i = 0; i < currentLen; i++) {
-                                indices[i] += carry;
-                                if (indices[i] < charsetLen) { carry = 0; break; } 
-                                else { indices[i] = 0; carry = 1; if (i === currentLen - 1) currentLen++; }
-                            }
+                        if (match) {
+                            let res = "";
+                            for(let j = currentLen - 1; j >= 0; j--) res += charset[indices[j]];
+                            self.postMessage({ type: 'FOUND', combo: res });
+                            return;
+                        }
+                        let carry = step;
+                        for (let i = 0; i < currentLen; i++) {
+                            indices[i] += carry;
+                            if (indices[i] < charsetLen) { carry = 0; break; } 
+                            else { carry = Math.floor(indices[i] / charsetLen); indices[i] = indices[i] % charsetLen; }
                         }
                     }
-                    self.postMessage({ type: 'PROGRESS', count: batchSize * step });
+                    self.postMessage({ type: 'PROGRESS', count: batchSize });
                     setTimeout(run, 0);
                 }
                 run();
@@ -312,14 +247,25 @@
         `;
 
         const coreCount = navigator.hardwareConcurrency || 4;
-        let workers = [], isRunning = false, totalAttempts = 0n, startTime = 0, timerInterval, speedInterval;
+        let workers = [], isRunning = false, totalAttempts = 0n, startTime = 0;
+        let timerInterval, speedInterval;
+
         document.getElementById('coreCountDisplay').innerText = coreCount;
+        const grid = document.getElementById('workerGrid');
+        for(let i=0; i<coreCount; i++){
+            const d = document.createElement('div');
+            d.id = `pill-${i}`;
+            d.className = "border border-slate-700 bg-slate-800/20 p-2 rounded text-[9px] text-center font-bold text-slate-500";
+            d.innerText = `C${i}`;
+            grid.appendChild(d);
+        }
 
         function log(msg, type = 'info') {
             const term = document.getElementById('terminal');
+            if(!term) return;
             const div = document.createElement('div');
-            div.className = { info: 'text-slate-400', success: 'text-green-400 font-bold', error: 'text-red-400', warn: 'text-blue-400', tech: 'text-slate-500 font-mono text-[10px]' }[type];
-            div.innerHTML = `<span class="opacity-30 mr-2">></span>${msg}`;
+            div.className = { info: 'text-slate-400', success: 'text-green-400 font-bold', error: 'text-red-400', warn: 'text-blue-400' }[type];
+            div.innerHTML = `<span class="opacity-20 mr-2">></span>${msg}`;
             term.appendChild(div);
             term.scrollTop = term.scrollHeight;
         }
@@ -327,133 +273,126 @@
         function calculateEntropy(str) {
             const len = str.length; if (len === 0) return 0;
             const freq = {}; for (let c of str) freq[c] = (freq[c] || 0) + 1;
-            let entropy = 0; for (let c in freq) { let p = freq[c]/len; entropy -= p * Math.log2(p); }
-            return entropy * len;
+            let ent = 0; for (let c in freq) { let p = freq[c]/len; ent -= p * Math.log2(p); }
+            return ent * len;
         }
 
-        function updateSecurityUI(password) {
-            const entropy = Math.round(calculateEntropy(password) * 10) / 10;
+        function updateUI(val) {
+            const ent = Math.round(calculateEntropy(val)*10)/10;
             const bar = document.getElementById('securityBar');
-            const verdict = document.getElementById('securityVerdict');
-            document.getElementById('entropyDisplay').innerText = `${entropy} bits`;
+            document.getElementById('entropyDisplay').innerText = `${ent} bits`;
             let score = 0;
-            if (password.length >= 8) score += 20;
-            if (password.length >= 12) score += 20;
-            if (/[A-Z]/.test(password)) score += 20;
-            if (/[0-9]/.test(password)) score += 20;
-            if (/[^A-Za-z0-9]/.test(password)) score += 20;
+            if (val.length >= 8) score += 20;
+            if (val.length >= 12) score += 20;
+            if (/[A-Z]/.test(val)) score += 20;
+            if (/[0-9]/.test(val)) score += 20;
+            if (/[^a-zA-Z0-9]/.test(val)) score += 20;
             bar.style.width = score + "%";
             bar.style.backgroundColor = score < 40 ? "#ef4444" : (score < 80 ? "#fbbf24" : "#10b981");
-            verdict.innerText = score < 40 ? "FAIBLE" : (score < 80 ? "MOYEN" : "EXCELLENT");
-            verdict.className = score < 40 ? "text-red-500 font-black" : (score < 80 ? "text-yellow-500 font-black" : "text-green-400 font-black");
-            const charsetSize = 62; 
-            const timeS = Math.pow(charsetSize, password.length) / 800_000_000;
-            document.getElementById('timeToCrack').innerText = timeS < 60 ? "< 1 min" : (timeS > 31536000 ? "> 1 an" : Math.round(timeS/3600) + "h");
-        }
-
-        function showFinalReport(password) {
-            const container = document.getElementById('adviceContainer');
-            const perfectStatus = document.getElementById('perfectStatus');
-            const waiting = document.getElementById('waitingMessage');
-            waiting.classList.add('hidden');
-            container.classList.remove('hidden');
-            container.innerHTML = "";
-            let score = 0;
-            const checks = [
-                { test: password.length >= 12, ok: "Longueur excellente (12+)", no: "Trop court : visez au moins 12 caractères." },
-                { test: /[A-Z]/.test(password), ok: "Majuscules détectées", no: "Manque de majuscules : mélangez les casses." },
-                { test: /[0-9]/.test(password), ok: "Chiffres détectés", no: "Aucun chiffre : ajoutez-en pour complexifier." },
-                { test: /[^A-Za-z0-9]/.test(password), ok: "Symboles détectés", no: "Pas de symboles : utilisez @, #, !, etc." }
+            document.getElementById('securityVerdict').innerText = score < 40 ? "FAIBLE" : (score < 80 ? "MOYEN" : "EXCELLENT");
+            document.getElementById('timeToCrack').innerText = val.length < 5 ? "< 1s" : (val.length > 10 ? "> 1 an" : "Quelques min");
+            
+            const cont = document.getElementById('adviceContainer');
+            const perf = document.getElementById('perfectStatus');
+            document.getElementById('waitingMessage').classList.add('hidden');
+            cont.classList.remove('hidden');
+            cont.innerHTML = "";
+            const items = [
+                { t: val.length >= 12, ok: "Longueur idéale", no: "Trop court" },
+                { t: /[A-Z]/.test(val), ok: "Majuscules OK", no: "Manque majuscules" },
+                { t: /[0-9]/.test(val), ok: "Chiffres OK", no: "Manque chiffres" }
             ];
-            checks.forEach(c => {
-                if (c.test) score += 25;
-                const div = document.createElement('div');
-                div.className = `advice-item ${c.test ? 'advice-check' : 'advice-warn'}`;
-                div.innerHTML = `<strong>${c.test ? '✓' : '⚠️'}</strong> ${c.test ? c.ok : c.no}`;
-                container.appendChild(div);
+            items.forEach(i => {
+                const d = document.createElement('div');
+                d.className = `advice-item ${i.t ? 'advice-check' : 'advice-warn'}`;
+                d.innerHTML = `<strong>${i.t ? '✓' : '⚠️'}</strong> ${i.t ? i.ok : i.no}`;
+                cont.appendChild(d);
             });
-            if (score >= 100) perfectStatus.classList.remove('hidden');
-            else perfectStatus.classList.add('hidden');
+            if(score >= 100) perf.classList.remove('hidden'); else perf.classList.add('hidden');
         }
-
-        document.getElementById('targetInput').addEventListener('input', (e) => {
-            const val = e.target.value;
-            document.getElementById('detectedLengthBadge').innerText = val.length;
-            updateSecurityUI(val);
-            document.getElementById('waitingMessage').classList.remove('hidden');
-            document.getElementById('adviceContainer').classList.add('hidden');
-            document.getElementById('perfectStatus').classList.add('hidden');
-        });
 
         async function start() {
             const target = document.getElementById('targetInput').value;
-            const useAuto = document.getElementById('useAutoLength').checked;
-            const charsetParts = [];
-            if(document.getElementById('useLower').checked) charsetParts.push('abcdefghijklmnopqrstuvwxyz');
-            if(document.getElementById('useUpper').checked) charsetParts.push('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
-            if(document.getElementById('useNumbers').checked) charsetParts.push('0123456789');
-            if(document.getElementById('useSymbols').checked) charsetParts.push('!@#$%^&*()-_=+[]{}|;:,.<>?');
-            const charset = charsetParts.join('');
+            const cp = [];
+            if(document.getElementById('useLower').checked) cp.push('abcdefghijklmnopqrstuvwxyz');
+            if(document.getElementById('useUpper').checked) cp.push('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+            if(document.getElementById('useNumbers').checked) cp.push('0123456789');
+            if(document.getElementById('useSymbols').checked) cp.push('!@#$%^&*()');
+            const charset = cp.join('');
             if(!target || !charset) return;
+
             isRunning = true; totalAttempts = 0n; startTime = Date.now();
-            document.getElementById('terminal').innerHTML = "";
             document.getElementById('startBtn').classList.add('hidden');
             document.getElementById('stopBtn').classList.remove('hidden');
             document.getElementById('currentMode').innerText = "RUNNING";
-            log(`MOTEUR : Tous les cœurs activés à 100%`, "warn");
+            log("INIT CLUSTER...", "warn");
+
             timerInterval = setInterval(() => {
-                const diff = new Date(Date.now() - startTime);
-                document.getElementById('elapsedTime').innerText = diff.toISOString().substr(11, 8);
+                const d = new Date(Date.now() - startTime);
+                document.getElementById('elapsedTime').innerText = d.toISOString().substr(11, 8);
             }, 1000);
+
             speedInterval = setInterval(() => {
-                const elapsed = (Date.now() - startTime) / 1000;
-                if(elapsed > 0) document.getElementById('statSpeed').innerText = Math.floor(Number(totalAttempts) / elapsed).toLocaleString() + " h/s";
+                const el = (Date.now() - startTime) / 1000;
+                if(el > 0) document.getElementById('statSpeed').innerText = Math.floor(Number(totalAttempts)/el).toLocaleString() + " h/s";
+                document.getElementById('statCount').innerText = totalAttempts.toLocaleString();
             }, 500);
-            const blob = new Blob([workerCode], { type: 'application/javascript' });
-            const workerUrl = URL.createObjectURL(blob);
-            const minL = useAuto ? target.length : 1;
-            const maxL = useAuto ? target.length : 15;
-            for (let i = 0; i < coreCount; i++) {
-                const worker = new Worker(workerUrl);
-                document.getElementById(`worker-pill-${i}`).classList.add('worker-active');
-                worker.onmessage = (e) => {
-                    if (e.data.type === 'PROGRESS') {
-                        totalAttempts += BigInt(e.data.count);
-                        document.getElementById('statCount').innerText = totalAttempts.toLocaleString();
-                    } else if (e.data.type === 'FOUND') finish(e.data.combo);
+
+            const b = new Blob([workerCode], {type:'application/javascript'});
+            const url = URL.createObjectURL(b);
+            for(let i=0; i<coreCount; i++){
+                const w = new Worker(url);
+                document.getElementById(`pill-${i}`).classList.add('worker-active');
+                w.onmessage = e => {
+                    if(e.data.type==='PROGRESS') totalAttempts += BigInt(e.data.count);
+                    else if(e.data.type==='FOUND') { log("SUCCÈS: "+e.data.combo, "success"); stop(); }
                 };
-                worker.postMessage({ target, charset, startFrom: i, step: coreCount, minLen: minL, maxLen: maxL });
-                workers.push(worker);
+                w.postMessage({target, charset, startFrom: i, step: coreCount});
+                workers.push(w);
             }
         }
 
-        function finish(combo) {
-            log(`SUCCÈS : [${combo}] décrypté !`, "success");
-            showFinalReport(combo);
-            stopAll();
-        }
-
-        function stopAll() {
+        function stop() {
             isRunning = false; workers.forEach(w => w.terminate()); workers = [];
             clearInterval(timerInterval); clearInterval(speedInterval);
             document.getElementById('startBtn').classList.remove('hidden');
             document.getElementById('stopBtn').classList.add('hidden');
-            document.getElementById('currentMode').innerText = "IDLE";
+            document.getElementById('currentMode').innerText = "VEILLE";
             document.querySelectorAll('.worker-active').forEach(p => p.classList.remove('worker-active'));
         }
 
-        const workerGrid = document.getElementById('workerGrid');
-        for(let i=0; i<coreCount; i++) {
-            const pill = document.createElement('div');
-            pill.id = `worker-pill-${i}`;
-            pill.className = `border border-slate-700 bg-slate-800/20 p-2 rounded text-[10px] text-center`;
-            pill.innerText = `C${i}`;
-            workerGrid.appendChild(pill);
-        }
-        updateSecurityUI(document.getElementById('targetInput').value);
-        document.getElementById('detectedLengthBadge').innerText = document.getElementById('targetInput').value.length;
+        document.getElementById('targetInput').addEventListener('input', e => updateUI(e.target.value));
         document.getElementById('startBtn').addEventListener('click', start);
-        document.getElementById('stopBtn').addEventListener('click', stopAll);
+        document.getElementById('stopBtn').addEventListener('click', stop);
+        updateUI("soleil");
+
+        // GESTION INSTALLATION (Correction Erreur Blob)
+        let def;
+        window.addEventListener('beforeinstallprompt', e => { 
+            e.preventDefault(); 
+            def = e; 
+            log("SYSTÈME D'INSTALLATION PRÊT", "warn");
+        });
+
+        document.getElementById('installAppBtn').addEventListener('click', async () => {
+            if(def){ 
+                def.prompt(); 
+                def = null; 
+            } else { 
+                document.getElementById('installToast').classList.add('show'); 
+                setTimeout(()=>document.getElementById('installToast').classList.remove('show'), 6000); 
+            }
+        });
+
+        // Désactivation de l'enregistrement Blob du Service Worker qui cause l'erreur
+        // Sur GitHub Pages, le SW doit être un fichier physique nommé sw.js à la racine.
+        // On laisse ici la structure pour éviter les crashs si le fichier est absent.
+        if('serviceWorker' in navigator && window.location.protocol === 'https:') {
+            // Note : L'enregistrement ne se fera que si un vrai fichier sw.js existe sur ton GitHub.
+            navigator.serviceWorker.register('./sw.js').catch(err => {
+                console.log("Service Worker non enregistré (attendu sans fichier physique):", err.message);
+            });
+        }
     </script>
 </body>
 </html>
